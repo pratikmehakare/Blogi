@@ -35,9 +35,11 @@ const App = () => {
     <div className="min-h-screen bg-gray-100">
       <nav className="bg-white shadow py-4">
         <div className="container mx-auto px-4 flex justify-between">
-          <Link to="/" className="text-xl font-bold">
-            My Blog
+          <Link to="/" className="text-xl font-bold flex items-center gap-2">
+            <img src="/logo.png" alt="Logo" className="h-10 w-10" />
+            Blogi
           </Link>
+
           <div>
             {token ? (
               <>
