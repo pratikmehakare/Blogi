@@ -2,25 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllPost, deletePost } from '../services/oprations/postService'; // Adjust path if needed
 import Pagination from './Pagination';
+import { useSelector } from 'react-redux';
 
 const BlogList = () => {
   const [posts, setPosts] = useState([]);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [totalPosts, setTotalPosts] = useState(0);
-  const [token,setToken] = useState(null);
   const pageSize = 10;
-
-    useEffect(() => {
-      if (localStorage.getItem("token")) {
-        setToken(JSON.parse(localStorage.getItem("token")))
-  
-      }
-    }, [token])
+  const user = useSelector((state) => state.user);
 
   const fetchPosts = async () => {
     try {
-
+      console.log("user", user);
       const data = await getAllPost(); // Gets posts from the API
       setPosts(data);
       // Update totalPosts if your backend provides it:
@@ -33,19 +27,17 @@ const BlogList = () => {
   useEffect(() => {
     fetchPosts();
     // eslint-disable-next-line
-  }, [page, search]);
+  }, [user, page, search]);
 
   const handleDelete = async (id) => {
     try {
-      await deletePost(id,token);
+      // If needed, use user.token or any token value from your user object
+      await deletePost(id, user?.token);
       fetchPosts();
     } catch (error) {
       console.error('Error deleting post', error);
     }
   };
-
-  // Check if user is logged in by verifying if token exists
-  
 
   return (
     <div>
@@ -75,7 +67,7 @@ const BlogList = () => {
               className="mt-4 w-full max-h-80 object-cover"
             />
           )}
-          {token && (
+          {user && (
             <div className="mt-4 flex space-x-2">
               <Link
                 to={`/edit/${post._id}`}
